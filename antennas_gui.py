@@ -25,10 +25,8 @@ w2 = {"left": [1129, 352, 1121, 348],
       "middle": [1228, 483, 1223, 489]}
 
 # towers locations end
-azymuty = [a2, a3, a4, a5, a6]
-azymuty1 = [a1]
-azymuty2 = []
 
+azimuths = [a2, a3, a4, a5, a6]
 
 def visibility(elem):
     if elem == 0.3:
@@ -91,7 +89,7 @@ def rorate(a, v, lok):
 def retList():
     azimuth1 = [a1]
     azimuth2 = []
-    for i in azymuty:
+    for i in azimuths:
         if not len(azimuth1) == 3:
             if 60 < abs(i[0] - azimuth1[0][0]) < 160 or 230 < abs(i[0] - azimuth1[0][0]) < 330:
                 azimuth1.append(i)
