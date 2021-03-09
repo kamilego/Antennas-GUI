@@ -8,9 +8,9 @@ a2 = [346, 1.2]
 a3 = [212, 0.6]
 a4 = [120, 0.6]
 a5 = [310, 1.2]
-a6 = [249, 0.6]
+a6 = [221, 0.6]
 
-tow_azimuth = 20
+tow_azimuth = 264
 speed = 0
 # to be changed end
 
@@ -19,16 +19,16 @@ speed = 0
 w1 = {"left": [769, 436],
       "right": [934, 437],
       "middle": [847, 292]}
-w2 = {"left": [1133, 438],
-      "right": [1299, 438],
-      "middle": [1209, 291]}
-prop_visib_pos = [2411, 752]
+w2 = {"left": [w1["left"][0] + 365, w1["left"][1]],
+      "right": [w1["right"][0] + 365, w1["right"][1]],
+      "middle": [w1["middle"][0] + 365, w1["middle"][1]]}
+prop_below_vis_pos = [2411, 752]
+prop_visib_pos = [prop_below_vis_pos[0], prop_below_vis_pos[1] - 19]
 arrow_red_pos = [1736, 882]
-ant_green_pos = [1736, 707]
+ant_green_pos = [arrow_red_pos[0], arrow_red_pos[1] - 175]
 mid_w1_pos = [851, 390]
-mid_w2_pos = [1216, 389]
-prop_below_vis_pos = [2430, 733]
-offset_arrow_red = [996, 882]
+mid_w2_pos = [mid_w1_pos[0] + 365, mid_w1_pos[1]]
+offset_arrow_red = [arrow_red_pos[0] - 740, arrow_red_pos[1]]
 # mouse location end
 
 
@@ -37,10 +37,10 @@ def visibility(elem):
         pyautogui.press("enter")
     elif elem == 0.6:
         pyautogui.typewrite('0')
-        pyautogui.click(prop_visib_pos)
+        pyautogui.click(prop_below_vis_pos)
     else:
         pyautogui.typewrite('1')
-        pyautogui.click(prop_visib_pos)
+        pyautogui.click(prop_below_vis_pos)
 
 
 def degree_change(azimuth):
@@ -50,13 +50,13 @@ def degree_change(azimuth):
         return 0
 
 
-def rot_position(azimuth):
+def rot_position(azimuth, poz1, poz2):
     alfa = azimuth - 90
     cos_alfa = math.cos(math.radians(alfa))
     sin_alfa = math.sin(math.radians(alfa))
-    l = sqrt((arrow_red_pos[0] - ant_green_pos[0]) ** 2 + (arrow_red_pos[1] - ant_green_pos[1]) ** 2)
-    x1 = arrow_red_pos[0] + l * cos_alfa - (arrow_red_pos[0] - offset_arrow_red[0])
-    y1 = arrow_red_pos[1] + l * sin_alfa
+    l = sqrt((poz1[0] - poz2[0]) ** 2 + (poz1[1] - poz2[1]) ** 2)
+    x1 = poz1[0] + l * cos_alfa - (poz1[0] - offset_arrow_red[0])
+    y1 = poz1[1] + l * sin_alfa
     return x1, y1
 
 
@@ -75,37 +75,34 @@ def sort_az_list():
     return azimuth1, azimuth2
 
 
+def azimuth_check(az):
+    if az < 120:
+        return az
+    elif 120 <= az < 240:
+        return az - 120
+    else:
+        return az - 240
+
+
 def antennas_pos_w(ant_azimuth, tow_az, tower):
-    if tow_az < 120:
-        tow_az += 0
-    if 120 < tow_az < 240:
-        tow_az -= 120
-    if tow_az > 240:
-        tow_az -= 240
-    if 300 <= ant_azimuth <= 360 or 0 <= ant_azimuth < 60:
-        if 300 <= tow_az <= 360 or 0 <= tow_az <= 60:
-            return new_rotated_antenas_positions(tower["middle"], tow_az)
-        elif 60 <= tow_az <= 120:
-            return new_rotated_antenas_positions(tower["left"], tow_az)
+    if 300 <= ant_azimuth <= 360 or 0 <= ant_azimuth <= 60:
+        if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
+            return new_rotated_antenas_positions(tower["middle"], azimuth_check(tow_az))
+        elif 60 < azimuth_check(tow_az) <= 120:
+            return new_rotated_antenas_positions(tower["left"], azimuth_check(tow_az))
     if 60 < ant_azimuth < 180:
-        if 300 <= tow_az <= 360 or 0 <= tow_az <= 60:
-            return new_rotated_antenas_positions(tower["right"], tow_az)
-        elif 60 < tow_az <= 120:
-            return new_rotated_antenas_positions(tower["middle"], tow_az)
-    if 180 < ant_azimuth < 300:
-        if 300 <= tow_az <= 360 or 0 <= tow_az <= 60:
-            return new_rotated_antenas_positions(tower["left"], tow_az)
-        elif 60 < tow_az <= 120:
-            return new_rotated_antenas_positions(tower["right"], tow_az)
+        if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
+            return new_rotated_antenas_positions(tower["right"], azimuth_check(tow_az))
+        elif 60 < azimuth_check(tow_az) <= 120:
+            return new_rotated_antenas_positions(tower["middle"], azimuth_check(tow_az))
+    if 180 <= ant_azimuth < 300:
+        if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
+            return new_rotated_antenas_positions(tower["left"], azimuth_check(tow_az))
+        elif 60 < azimuth_check(tow_az) <= 120:
+            return new_rotated_antenas_positions(tower["right"], azimuth_check(tow_az))
 
 
 def new_rotated_antenas_positions(elem, az):
-    if az < 120:
-        az = az + 0
-    if 120 < az < 240:
-        az = az - 120
-    if az > 240:
-        az = az - 240
     if elem == w1["left"]:
         alfa = az - 120 - 90
         cos = math.cos(math.radians(alfa))
@@ -157,22 +154,28 @@ def new_rotated_antenas_positions(elem, az):
 
 
 def rorate(a, v, lok):
-    pyautogui.click(arrow_red_pos, duration=speed)
+    pyautogui.moveTo(arrow_red_pos, duration=speed)
+    pyautogui.click()
     pyautogui.press("enter")
-    pyautogui.click(prop_below_vis_pos)
+    pyautogui.click(prop_visib_pos)
     visibility(v)
     pyautogui.typewrite(str(a))
     pyautogui.press("enter")
     pyautogui.press("enter")
     pyautogui.typewrite(str(degree_change(a)))
     pyautogui.press("enter")
-    pyautogui.click(arrow_red_pos, duration=speed)
+    pyautogui.moveTo(arrow_red_pos, duration=speed)
+    pyautogui.click()
     pyautogui.click(offset_arrow_red, duration=speed)
-    pyautogui.click(mid_w1_pos, duration=speed)
-    pyautogui.click(mid_w2_pos, duration=speed)
-    pyautogui.click(rot_position(a), duration=speed)
+    pyautogui.moveTo(mid_w1_pos, duration=speed)
+    pyautogui.click()
+    pyautogui.moveTo(mid_w2_pos, duration=speed)
+    pyautogui.click()
+    pyautogui.moveTo(rot_position(a, arrow_red_pos, ant_green_pos), duration=speed)
+    pyautogui.click()
     pyautogui.press("f3")
-    pyautogui.click(lok[0:2])
+    pyautogui.moveTo(lok)
+    pyautogui.click()
     pyautogui.press("f3")
     pyautogui.press("esc")
 
@@ -181,7 +184,7 @@ def towers_rotate(tow_az):
     pyautogui.click()
     pyautogui.click(mid_w1_pos, duration=speed)
     pyautogui.click(mid_w2_pos, duration=speed)
-    pyautogui.click(prop_below_vis_pos)
+    pyautogui.click(prop_visib_pos)
     pyautogui.typewrite(str(tow_az))
     pyautogui.press("enter")
     pyautogui.moveTo(arrow_red_pos, duration=speed)
