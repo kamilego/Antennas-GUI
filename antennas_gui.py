@@ -3,31 +3,48 @@ import math
 from math import *
 
 # to be changed
-a1 = [66, 0.6]
+a1 = [212, 0.6]
 a2 = [346, 1.2]
-a3 = [212, 0.6]
-a4 = [120, 0.6]
+a3 = [100, 0.6]
+a4 = [66, 0.6]
 a5 = [310, 1.2]
 a6 = [221, 0.6]
 
-tow_azimuth = 264
-speed = 0
+tow_check_E = "E3"      # E2 or E3 # note that: E4 == E3
+tow_azimuth = 120
+speed = 0.1
 # to be changed end
+
+# todo 1: write a code for block with E2 and E3 sections
+# todo 2: try to split function that counts new rotated coordinates
+# todo 3: write function that will change right visibility of vertical antennas - de most difficult thing
+# todo 4: do something with that cos, sin, and also with lists named azimuths, azimuths1 and azimuths2
 
 # mouse location
 # once set always will work
-w1 = {"left": [769, 436],
-      "right": [934, 437],
-      "middle": [847, 292]}
-w2 = {"left": [w1["left"][0] + 365, w1["left"][1]],
-      "right": [w1["right"][0] + 365, w1["right"][1]],
-      "middle": [w1["middle"][0] + 365, w1["middle"][1]]}
-prop_below_vis_pos = [2411, 752]
-prop_visib_pos = [prop_below_vis_pos[0], prop_below_vis_pos[1] - 19]
-arrow_red_pos = [1736, 882]
-ant_green_pos = [arrow_red_pos[0], arrow_red_pos[1] - 175]
-mid_w1_pos = [851, 390]
-mid_w2_pos = [mid_w1_pos[0] + 365, mid_w1_pos[1]]
+res_scalar = 1
+mid_w1_pos = [1190, 447]
+mid_w2_pos = [1635, 447]
+prop_visib_pos = [2411, 733]
+arrow_red_pos = [1848, 1085]
+all_a = [a1, a2, a3, a4, a5, a6]
+
+
+def tower_type(tow_check):
+    if tow_check == "E2":
+        return [0, 0]
+    elif tow_check == "E3":
+        return [21, 16, 11]
+
+
+w1 = {"left": [mid_w1_pos[0] - (60 + tower_type(tow_check_E)[1]), mid_w1_pos[1] + (32 + tower_type(tow_check_E)[2])],
+      "right": [mid_w1_pos[0] + (60 + tower_type(tow_check_E)[1]), mid_w1_pos[1] + (32 + tower_type(tow_check_E)[2])],
+      "middle": [mid_w1_pos[0], mid_w1_pos[1] - (68 + tower_type(tow_check_E)[0])]}
+w2 = {"left": [mid_w2_pos[0] - (60 + tower_type(tow_check_E)[1]), mid_w2_pos[1] + (32 + tower_type(tow_check_E)[2])],
+      "right": [mid_w2_pos[0] + (60 + tower_type(tow_check_E)[1]), mid_w2_pos[1] + (32 + tower_type(tow_check_E)[2])],
+      "middle": [mid_w2_pos[0], mid_w2_pos[1] - (68 + tower_type(tow_check_E)[0])]}
+prop_below_vis_pos = [prop_visib_pos[0], prop_visib_pos[1] + 19]
+ant_green_pos = [arrow_red_pos[0], arrow_red_pos[1] - 160]
 offset_arrow_red = [arrow_red_pos[0] - 740, arrow_red_pos[1]]
 # mouse location end
 
@@ -174,7 +191,7 @@ def rorate(a, v, lok):
     pyautogui.moveTo(rot_position(a, arrow_red_pos, ant_green_pos), duration=speed)
     pyautogui.click()
     pyautogui.press("f3")
-    pyautogui.moveTo(lok)
+    pyautogui.moveTo(lok, duration=speed)
     pyautogui.click()
     pyautogui.press("f3")
     pyautogui.press("esc")
@@ -191,15 +208,41 @@ def towers_rotate(tow_az):
     pyautogui.press("esc")
 
 
+def visib_check(antenna):
+    if antenna[1] == 0.6:
+        return [232, 359]
+    if antenna[1] == 1.2:
+        return [232, 503]
+    if antenna[1] == 0.3:
+        return [232, 650]
+
+
+def cross_antennas(antenna,number):
+    pyautogui.click()
+    pyautogui.moveTo(visib_check(antenna), duration=speed)
+    pyautogui.click()
+    pyautogui.press("enter")
+    pyautogui.moveTo(prop_below_vis_pos, duration=speed)
+    pyautogui.click()
+    pyautogui.typewrite(str(antenna[0]))
+    pyautogui.press("enter")
+    pyautogui.typewrite(str(number))
+    pyautogui.press("enter")
+    pyautogui.click(visib_check(antenna))
+    pyautogui.click(visib_check(antenna)[0] + 500, visib_check(antenna)[1])
+    pyautogui.press("esc")
+
+
 azimuth1, azimuth2 = sort_az_list()
 towers_rotate(tow_azimuth)
-rorate(azimuth1[0][0], azimuth1[0][1], antennas_pos_w(azimuth1[0][0], tow_azimuth, w1))
-rorate(azimuth1[1][0], azimuth1[1][1], antennas_pos_w(azimuth1[1][0], tow_azimuth, w1))
-rorate(azimuth1[2][0], azimuth1[2][1], antennas_pos_w(azimuth1[2][0], tow_azimuth, w1))
+for i in range(3):
+    rorate(azimuth1[i][0], azimuth1[i][1], antennas_pos_w(azimuth1[i][0], tow_azimuth, w1))
 
-rorate(azimuth2[0][0], azimuth2[0][1], antennas_pos_w(azimuth2[0][0], tow_azimuth, w2))
-rorate(azimuth2[1][0], azimuth2[1][1], antennas_pos_w(azimuth2[1][0], tow_azimuth, w2))
-rorate(azimuth2[2][0], azimuth2[2][1], antennas_pos_w(azimuth2[2][0], tow_azimuth, w2))
+for i in range(3):
+    rorate(azimuth2[i][0], azimuth2[i][1], antennas_pos_w(azimuth2[i][0], tow_azimuth, w2))
+
+for n, i in enumerate(all_a):
+    cross_antennas(i, n + 1)
 
 pyautogui.typewrite("rea")
 pyautogui.press("space")
