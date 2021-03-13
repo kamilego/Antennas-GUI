@@ -1,15 +1,14 @@
 import pyautogui
-import time
 import math
 from math import *
 
 # to be changed
-a1 = [212, 0.6]
-a2 = [346, 1.2]
-a3 = [100, 0.6]
-a4 = [66, 0.6]
-a5 = [310, 1.2]
-a6 = [221, 0.6]
+a1 = [212, 0.6, 1]
+a2 = [346, 1.2, 2]
+a3 = [100, 0.6, 3]
+a4 = [66, 0.6, 4]
+a5 = [310, 1.2, 5]
+a6 = [221, 0.6, 6]
 
 tow_check_E = "E3"      # E2 or E3 # note that: E4 == E3
 tow_azimuth = 120
@@ -17,7 +16,6 @@ speed = 0
 # to be changed end
 
 # todo 2: try to split function that counts new rotated coordinates
-# todo 3: write function that will change right visibility of vertical antennas - de most difficult thing
 # todo 4: do something with that cos, sin, and also with lists named azimuths, azimuths1 and azimuths2
 
 # mouse location
@@ -26,6 +24,7 @@ mid_w1_pos = [1180, 447]
 mid_w2_pos = [1627, 447]
 prop_visib_pos = [2411, 733]
 arrow_red_pos = [1840, 1087]
+cross_ant_local = [228, 357]
 all_a = [a1, a2, a3, a4, a5, a6]
 
 
@@ -101,17 +100,17 @@ def azimuth_check(az):
 
 
 def antennas_pos_w(ant_azimuth, tow_az, tower):
-    if 300 <= ant_azimuth <= 360 or 0 <= ant_azimuth <= 60:
+    if 300 <= ant_azimuth[0] <= 360 or 0 <= ant_azimuth[0] <= 60:
         if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
             return new_rotated_antenas_positions(tower["middle"], azimuth_check(tow_az))
         elif 60 < azimuth_check(tow_az) <= 120:
             return new_rotated_antenas_positions(tower["left"], azimuth_check(tow_az))
-    if 60 < ant_azimuth < 180:
+    if 60 < ant_azimuth[0] < 180:
         if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
             return new_rotated_antenas_positions(tower["right"], azimuth_check(tow_az))
         elif 60 < azimuth_check(tow_az) <= 120:
             return new_rotated_antenas_positions(tower["middle"], azimuth_check(tow_az))
-    if 180 <= ant_azimuth < 300:
+    if 180 <= ant_azimuth[0] < 300:
         if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
             return new_rotated_antenas_positions(tower["left"], azimuth_check(tow_az))
         elif 60 < azimuth_check(tow_az) <= 120:
@@ -169,16 +168,16 @@ def new_rotated_antenas_positions(elem, az):
         return [x1, y1]
 
 
-def rotate(a, v, lok):
+def rotate(azym, visib, lok):
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.click()
     pyautogui.press("enter")
     pyautogui.click(prop_visib_pos)
-    visibility(v)
-    pyautogui.typewrite(str(a))
+    visibility(visib[1])
+    pyautogui.typewrite(str(azym[0]))
     pyautogui.press("enter")
     pyautogui.press("enter")
-    pyautogui.typewrite(str(degree_change(a)))
+    pyautogui.typewrite(str(degree_change(azym[0])))
     pyautogui.press("enter")
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.click()
@@ -187,7 +186,7 @@ def rotate(a, v, lok):
     pyautogui.click()
     pyautogui.moveTo(mid_w2_pos, duration=speed)
     pyautogui.click()
-    pyautogui.moveTo(rot_position(a, arrow_red_pos, ant_green_pos), duration=speed)
+    pyautogui.moveTo(rot_position(azym[0], arrow_red_pos, ant_green_pos), duration=speed)
     pyautogui.click()
     pyautogui.press("f3")
     pyautogui.moveTo(lok, duration=speed)
@@ -211,54 +210,61 @@ def towers_rotate(tow_az,tow_check):
 
 
 def visib_check(antenna):
-    if antenna[1] == 0.6:
-        return [228, 357]
-    if antenna[1] == 1.2:
-        return [228, 502]
-    if antenna[1] == 0.3:
-        return [228, 650]
+    if antenna == 0.6:
+        return cross_ant_local
+    if antenna == 1.2:
+        return [cross_ant_local[0], cross_ant_local[1] + 150]
+    if antenna == 0.3:
+        return [cross_ant_local[0], cross_ant_local[1] + 300]
 
 
 def cross_antennas(antenna, number):
     pyautogui.click()
-    pyautogui.moveTo(visib_check(antenna), duration=speed)
+    pyautogui.moveTo(visib_check(antenna[1]), duration=speed)
     pyautogui.click()
     pyautogui.press("enter")
     pyautogui.click(prop_visib_pos)
-    pyautogui.scroll(1)
+    for i in range(rotate_cross_antennas(set_scross_antennas_angle(antenna[0], tow_azimuth))[1]):
+        pyautogui.typewrite(str(rotate_cross_antennas(set_scross_antennas_angle(antenna[0], tow_azimuth))[0]))
     pyautogui.moveTo(prop_below_vis_pos, duration=speed)
     pyautogui.click()
     pyautogui.typewrite(str(antenna[0]))
     pyautogui.press("enter")
-    pyautogui.typewrite(str(number))
+    pyautogui.typewrite(str(number[2]))
     pyautogui.press("enter")
-    pyautogui.click(visib_check(antenna))
-    pyautogui.click(visib_check(antenna)[0] + 500, visib_check(antenna)[1])
+    pyautogui.click(visib_check(antenna[1]))
+    if antenna == azimuth1[0] or antenna == azimuth1[1] or antenna == azimuth1[2]:
+        move = [800, 420]
+    else:
+        move = [1951, 420]
+    pyautogui.click(move)
     pyautogui.press("esc")
 
 
-def rotate_cross_antennas(azimuth,az_tow):
-    if azimuth[0] - az_tow > 0:
-        value = round((azimuth[0] - az_tow)/10)
-            if len(str(value)) < 10:
-                if value == 0:
-                    return pyautogui.moveTo(prop_below_vis_pos, duration=speed)
-                else:
-                    return value
+def set_scross_antennas_angle(azimuth, az_tow):
+    if azimuth - az_tow > 0:
+        return azimuth - az_tow
     else:
-        value = round((360+(azimuth[0] - az_tow))/10)
+        return 360 + (azimuth - az_tow)
 
+
+def rotate_cross_antennas(angle):
+    angle = round(angle/10)
+    if angle < 10:
+        return [angle, 1]
+    elif 10 <= angle < 20:
+        return [1, angle - 8]
+    elif 20 <= angle < 30:
+        return [2, angle - 18]
+    else:
+        return [3, angle - 28]
 
 azimuth1, azimuth2 = sort_az_list()
-# towers_rotate(tow_azimuth, tow_check_E)
-# for i in range(3):
-#     rotate(azimuth1[i][0], azimuth1[i][1], antennas_pos_w(azimuth1[i][0], tow_azimuth, w1))
-#
-# for i in range(3):
-#     rotate(azimuth2[i][0], azimuth2[i][1], antennas_pos_w(azimuth2[i][0], tow_azimuth, w2))
-#
-# for n, i in enumerate(all_a):
-#     cross_antennas(i, n + 1)
-rotate_cross_antennas(a1, tow_azimuth)
-# pyautogui.typewrite("rea")
-# pyautogui.press("space")
+towers_rotate(tow_azimuth, tow_check_E)
+for i in range(3):
+    rotate(azimuth1[i], azimuth1[i], antennas_pos_w(azimuth1[i], tow_azimuth, w1))
+    rotate(azimuth2[i], azimuth2[i], antennas_pos_w(azimuth2[i], tow_azimuth, w2))
+    cross_antennas(azimuth1[i], azimuth1[i])
+    cross_antennas(azimuth2[i], azimuth2[i])
+pyautogui.typewrite("rea")
+pyautogui.press("space")
