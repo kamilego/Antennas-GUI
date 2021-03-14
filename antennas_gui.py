@@ -3,15 +3,15 @@ import math
 from math import *
 
 # to be changed
-a1 = [212, 0.6, 1]
-a2 = [346, 1.2, 2]
-a3 = [100, 0.6, 3]
-a4 = [66, 0.6, 4]
-a5 = [310, 1.2, 5]
-a6 = [221, 0.6, 6]
+a1 = [96, 0.6, 1]
+a2 = [180, 0.6, 2]
+a3 = [113, 0.6, 3]
+a4 = [252, 0.6, 4]
+a5 = [288, 0.6, 5]
+a6 = [20, 0.6, 6]
 
 tow_check_E = "E3"      # E2 or E3 # note that: E4 == E3
-tow_azimuth = 120
+tow_azimuth = 344
 speed = 0
 # to be changed end
 
@@ -70,7 +70,7 @@ def rot_position(azimuth, poz1, poz2):
     cos_alfa = math.cos(math.radians(alfa))
     sin_alfa = math.sin(math.radians(alfa))
     l = sqrt((poz1[0] - poz2[0]) ** 2 + (poz1[1] - poz2[1]) ** 2)
-    x1 = poz1[0] + l * cos_alfa - (poz1[0] - offset_arrow_red[0])
+    x1 = poz1[0] + l * cos_alfa
     y1 = poz1[1] + l * sin_alfa
     return x1, y1
 
@@ -79,14 +79,14 @@ def sort_az_list():
     azimuths = [a2, a3, a4, a5, a6]
     azimuth1 = [a1]
     azimuth2 = []
-    for i in azimuths:
+    for elem in azimuths:
         if not len(azimuth1) == 3:
-            if 30 < abs(i[0] - azimuth1[0][0]) < 150 or 210 < abs(i[0] - azimuth1[0][0]) < 330:
-                azimuth1.append(i)
+            if 30 < abs(elem[0] - azimuth1[0][0]) < 150 or 210 < abs(elem[0] - azimuth1[0][0]) < 330:
+                azimuth1.append(elem)
             else:
-                azimuth2.append(i)
+                azimuth2.append(elem)
         else:
-            azimuth2.append(i)
+            azimuth2.append(elem)
     return azimuth1, azimuth2
 
 
@@ -102,82 +102,83 @@ def azimuth_check(az):
 def antennas_pos_w(ant_azimuth, tow_az, tower):
     if 300 <= ant_azimuth[0] <= 360 or 0 <= ant_azimuth[0] <= 60:
         if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
-            return new_rotated_antenas_positions(tower["middle"], azimuth_check(tow_az))
+            return new_rotated_antennas_positions(tower["middle"], azimuth_check(tow_az))
         elif 60 < azimuth_check(tow_az) <= 120:
-            return new_rotated_antenas_positions(tower["left"], azimuth_check(tow_az))
+            return new_rotated_antennas_positions(tower["left"], azimuth_check(tow_az))
     if 60 < ant_azimuth[0] < 180:
         if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
-            return new_rotated_antenas_positions(tower["right"], azimuth_check(tow_az))
+            return new_rotated_antennas_positions(tower["right"], azimuth_check(tow_az))
         elif 60 < azimuth_check(tow_az) <= 120:
-            return new_rotated_antenas_positions(tower["middle"], azimuth_check(tow_az))
+            return new_rotated_antennas_positions(tower["middle"], azimuth_check(tow_az))
     if 180 <= ant_azimuth[0] < 300:
         if 300 <= azimuth_check(tow_az) <= 360 or 0 <= azimuth_check(tow_az) <= 60:
-            return new_rotated_antenas_positions(tower["left"], azimuth_check(tow_az))
+            return new_rotated_antennas_positions(tower["left"], azimuth_check(tow_az))
         elif 60 < azimuth_check(tow_az) <= 120:
-            return new_rotated_antenas_positions(tower["right"], azimuth_check(tow_az))
+            return new_rotated_antennas_positions(tower["right"], azimuth_check(tow_az))
 
 
-def new_rotated_antenas_positions(elem, az):
+def new_rotated_antennas_positions(elem, az):
     if elem == w1["left"]:
         alfa = az - 120 - 90
-        cos = math.cos(math.radians(alfa))
-        sin = math.sin(math.radians(alfa))
+        cos_alfa = math.cos(math.radians(alfa))
+        sin_alfa = math.sin(math.radians(alfa))
         l1 = sqrt((mid_w1_pos[0] - elem[0]) ** 2 + (mid_w1_pos[1] - elem[1]) ** 2)
-        x1 = mid_w1_pos[0] + l1 * cos
-        y1 = mid_w1_pos[1] + l1 * sin
+        x1 = mid_w1_pos[0] + l1 * cos_alfa
+        y1 = mid_w1_pos[1] + l1 * sin_alfa
         return [x1, y1]
     elif elem == w1["right"]:
         alfa = az - 240 - 90
-        cos = math.cos(math.radians(alfa))
-        sin = math.sin(math.radians(alfa))
+        cos_alfa = math.cos(math.radians(alfa))
+        sin_alfa = math.sin(math.radians(alfa))
         l1 = sqrt((mid_w1_pos[0] - elem[0]) ** 2 + (mid_w1_pos[1] - elem[1]) ** 2)
-        x1 = mid_w1_pos[0] + l1 * cos
-        y1 = mid_w1_pos[1] + l1 * sin
+        x1 = mid_w1_pos[0] + l1 * cos_alfa
+        y1 = mid_w1_pos[1] + l1 * sin_alfa
         return [x1, y1]
     elif elem == w1["middle"]:
         alfa = az - 90
-        cos = math.cos(math.radians(alfa))
-        sin = math.sin(math.radians(alfa))
+        cos_alfa = math.cos(math.radians(alfa))
+        sin_alfa = math.sin(math.radians(alfa))
         l1 = sqrt((mid_w1_pos[0] - elem[0]) ** 2 + (mid_w1_pos[1] - elem[1]) ** 2)
-        x1 = mid_w1_pos[0] + l1 * cos
-        y1 = mid_w1_pos[1] + l1 * sin
+        x1 = mid_w1_pos[0] + l1 * cos_alfa
+        y1 = mid_w1_pos[1] + l1 * sin_alfa
         return [x1, y1]
     elif elem == w2["left"]:
         alfa = az - 120 - 90
-        cos = math.cos(math.radians(alfa))
-        sin = math.sin(math.radians(alfa))
+        cos_alfa = math.cos(math.radians(alfa))
+        sin_alfa = math.sin(math.radians(alfa))
         l1 = sqrt((mid_w2_pos[0] - elem[0]) ** 2 + (mid_w2_pos[1] - elem[1]) ** 2)
-        x1 = mid_w2_pos[0] + l1 * cos
-        y1 = mid_w2_pos[1] + l1 * sin
+        x1 = mid_w2_pos[0] + l1 * cos_alfa
+        y1 = mid_w2_pos[1] + l1 * sin_alfa
         return [x1, y1]
     elif elem == w2["right"]:
         alfa = az - 240 - 90
-        cos = math.cos(math.radians(alfa))
-        sin = math.sin(math.radians(alfa))
+        cos_alfa = math.cos(math.radians(alfa))
+        sin_alfa = math.sin(math.radians(alfa))
         l1 = sqrt((mid_w2_pos[0] - elem[0]) ** 2 + (mid_w2_pos[1] - elem[1]) ** 2)
-        x1 = mid_w2_pos[0] + l1 * cos
-        y1 = mid_w2_pos[1] + l1 * sin
+        x1 = mid_w2_pos[0] + l1 * cos_alfa
+        y1 = mid_w2_pos[1] + l1 * sin_alfa
         return [x1, y1]
     elif elem == w2["middle"]:
         alfa = az - 90
-        cos = math.cos(math.radians(alfa))
-        sin = math.sin(math.radians(alfa))
+        cos_alfa = math.cos(math.radians(alfa))
+        sin_alfa = math.sin(math.radians(alfa))
         l1 = sqrt((mid_w2_pos[0] - elem[0]) ** 2 + (mid_w2_pos[1] - elem[1]) ** 2)
-        x1 = mid_w2_pos[0] + l1 * cos
-        y1 = mid_w2_pos[1] + l1 * sin
+        x1 = mid_w2_pos[0] + l1 * cos_alfa
+        y1 = mid_w2_pos[1] + l1 * sin_alfa
         return [x1, y1]
 
 
-def rotate(azym, visib, lok):
+def rotate(az, visib, lok):
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.click()
     pyautogui.press("enter")
     pyautogui.click(prop_visib_pos)
     visibility(visib[1])
-    pyautogui.typewrite(str(azym[0]))
+    pyautogui.typewrite(str(az[0]))
     pyautogui.press("enter")
+    pyautogui.typewrite(str(az[2]))
     pyautogui.press("enter")
-    pyautogui.typewrite(str(degree_change(azym[0])))
+    pyautogui.typewrite(str(degree_change(az[0])))
     pyautogui.press("enter")
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.click()
@@ -186,7 +187,8 @@ def rotate(azym, visib, lok):
     pyautogui.click()
     pyautogui.moveTo(mid_w2_pos, duration=speed)
     pyautogui.click()
-    pyautogui.moveTo(rot_position(azym[0], arrow_red_pos, ant_green_pos), duration=speed)
+    pyautogui.moveTo(rot_position(az[0], arrow_red_pos, ant_green_pos)[0] - (arrow_red_pos[0] - offset_arrow_red[0]),
+                     rot_position(az[0], arrow_red_pos, ant_green_pos)[1], duration=speed)
     pyautogui.click()
     pyautogui.press("f3")
     pyautogui.moveTo(lok, duration=speed)
@@ -195,7 +197,7 @@ def rotate(azym, visib, lok):
     pyautogui.press("esc")
 
 
-def towers_rotate(tow_az,tow_check):
+def towers_rotate(tow_az, tow_check):
     pyautogui.click()
     pyautogui.click(mid_w1_pos, duration=speed)
     pyautogui.click(mid_w2_pos, duration=speed)
@@ -224,8 +226,8 @@ def cross_antennas(antenna, number):
     pyautogui.click()
     pyautogui.press("enter")
     pyautogui.click(prop_visib_pos)
-    for i in range(rotate_cross_antennas(set_scross_antennas_angle(antenna[0], tow_azimuth))[1]):
-        pyautogui.typewrite(str(rotate_cross_antennas(set_scross_antennas_angle(antenna[0], tow_azimuth))[0]))
+    for elem in range(rotate_cross_antennas(set_cross_antennas_angle(antenna[0], tow_azimuth))[1]):
+        pyautogui.typewrite(str(rotate_cross_antennas(set_cross_antennas_angle(antenna[0], tow_azimuth))[0]))
     pyautogui.moveTo(prop_below_vis_pos, duration=speed)
     pyautogui.click()
     pyautogui.typewrite(str(antenna[0]))
@@ -241,7 +243,7 @@ def cross_antennas(antenna, number):
     pyautogui.press("esc")
 
 
-def set_scross_antennas_angle(azimuth, az_tow):
+def set_cross_antennas_angle(azimuth, az_tow):
     if azimuth - az_tow > 0:
         return azimuth - az_tow
     else:
@@ -256,8 +258,11 @@ def rotate_cross_antennas(angle):
         return [1, angle - 8]
     elif 20 <= angle < 30:
         return [2, angle - 18]
+    elif angle == 36:
+        return [0, 0]
     else:
         return [3, angle - 28]
+
 
 azimuth1, azimuth2 = sort_az_list()
 towers_rotate(tow_azimuth, tow_check_E)
