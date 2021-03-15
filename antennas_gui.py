@@ -16,7 +16,6 @@ speed = 0
 # to be changed end
 
 # todo 2: try to split function that counts new rotated coordinates
-# todo 4: do something with that cos, sin, and also with lists named azimuths, azimuths1 and azimuths2
 
 # mouse location
 # once set always will work
@@ -77,17 +76,17 @@ def rot_position(azimuth, poz1, poz2):
 
 def sort_az_list():
     azimuths = [a2, a3, a4, a5, a6]
-    azimuth1 = [a1]
-    azimuth2 = []
+    az_list1 = [a1]
+    az_list2 = []
     for elem in azimuths:
-        if not len(azimuth1) == 3:
-            if 30 < abs(elem[0] - azimuth1[0][0]) < 150 or 210 < abs(elem[0] - azimuth1[0][0]) < 330:
-                azimuth1.append(elem)
+        if not len(az_list1) == 3:
+            if 30 < abs(elem[0] - az_list1[0][0]) < 150 or 210 < abs(elem[0] - az_list1[0][0]) < 330:
+                az_list1.append(elem)
             else:
-                azimuth2.append(elem)
+                az_list2.append(elem)
         else:
-            azimuth2.append(elem)
-    return azimuth1, azimuth2
+            az_list2.append(elem)
+    return az_list1, az_list2
 
 
 def azimuth_check(az):
