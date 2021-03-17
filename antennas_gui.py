@@ -49,6 +49,7 @@ offset_arrow_red = [arrow_red_pos[0] - 740, arrow_red_pos[1]]
 def visibility(elem):
     if elem == 0.3:
         pyautogui.press("enter")
+        pyautogui.click(prop_below_vis_pos)
     elif elem == 0.6:
         pyautogui.typewrite('0')
         pyautogui.click(prop_below_vis_pos)
