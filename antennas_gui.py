@@ -286,3 +286,5 @@ pyautogui.press("space")
 print(time.time() - begin_time)
 
 print(time.time() - begin_time)
+
+print(time.time() - begin_time)
