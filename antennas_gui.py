@@ -1,17 +1,20 @@
 import pyautogui
+import time
 import math
 from math import *
 
-# to be changed
-a1 = [96, 0.6, 1]
-a2 = [180, 0.6, 2]
-a3 = [113, 0.6, 3]
-a4 = [252, 0.6, 4]
-a5 = [288, 0.6, 5]
-a6 = [20, 0.6, 6]
+begin_time = time.time()
 
-tow_check_E = "E3"      # E2 or E3 # note that: E4 == E3
-tow_azimuth = 344
+# to be changed
+a1 = [116, 0.6, 1]
+a2 = [339, 0.6, 2]
+a3 = [180, 0.6, 3]
+a4 = [295, 1.2, 4]
+a5 = [85, 1.2, 5]
+a6 = [15, 0.6, 6]
+
+tow_check_E = "E2"      # E2 or E3 # note that: E4 == E3
+tow_azimuth = 292
 speed = 0
 # to be changed end
 
@@ -204,9 +207,12 @@ def towers_rotate(tow_az, tow_check):
     if tow_check == "E3":
         pyautogui.click(prop_visib_pos)
         pyautogui.typewrite("e")
-    pyautogui.click(prop_below_vis_pos)
-    pyautogui.typewrite(str(tow_az))
-    pyautogui.press("enter")
+    if not tow_az == 0:
+        pyautogui.click(prop_below_vis_pos)
+        pyautogui.typewrite(str(tow_az))
+        pyautogui.press("enter")
+    else:
+        pyautogui.press("esc")
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.press("esc")
 
@@ -236,9 +242,9 @@ def cross_antennas(antenna, number):
     pyautogui.press("enter")
     pyautogui.click(visib_check(antenna[1]))
     if antenna == azimuth1[0] or antenna == azimuth1[1] or antenna == azimuth1[2]:
-        move = [800, 420]
+        move = [700, 320 + 100 * number[2]]
     else:
-        move = [1951, 420]
+        move = [1951, 320 + 100 * number[2]]
     pyautogui.click(move)
     pyautogui.press("esc")
 
@@ -266,10 +272,15 @@ def rotate_cross_antennas(angle):
 
 azimuth1, azimuth2 = sort_az_list()
 towers_rotate(tow_azimuth, tow_check_E)
+for enum, elem in enumerate(all_a):
+    if elem in azimuth1:
+        rotate(elem, elem, antennas_pos_w(elem, tow_azimuth, w1))
+    else:
+        rotate(elem, elem, antennas_pos_w(elem, tow_azimuth, w2))
 for i in range(3):
-    rotate(azimuth1[i], azimuth1[i], antennas_pos_w(azimuth1[i], tow_azimuth, w1))
-    rotate(azimuth2[i], azimuth2[i], antennas_pos_w(azimuth2[i], tow_azimuth, w2))
     cross_antennas(azimuth1[i], azimuth1[i])
     cross_antennas(azimuth2[i], azimuth2[i])
 pyautogui.typewrite("rea")
 pyautogui.press("space")
+
+print(time.time() - begin_time)
