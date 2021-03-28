@@ -1,5 +1,6 @@
 # Antennas-GUI
 An application that helps with setting antennas azimuths.  
+I figure this scritp out during my work in design office, where my duty was to plan first towers and antennas locations. To speed my work I wrote this.  
 Used librabry pyautogui and math.  
 Used draft program AutoCAD 2D.  
 It includes similar moves accoring coordinates of certain parts of antennas.  
