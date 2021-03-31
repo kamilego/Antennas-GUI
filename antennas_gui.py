@@ -68,8 +68,8 @@ def degree_change(azimuth):
         return 0
 
 
-def rot_position(azimuth, poz1, poz2):
-    alfa = azimuth - 90
+def rot_position(azimuth, poz1, poz2, az_rot = 0):
+    alfa = azimuth - az_rot - 90
     cos_alfa = math.cos(math.radians(alfa))
     sin_alfa = math.sin(math.radians(alfa))
     l = sqrt((poz1[0] - poz2[0]) ** 2 + (poz1[1] - poz2[1]) ** 2)
@@ -122,53 +122,17 @@ def antennas_pos_w(ant_azimuth, tow_az, tower):
 
 def new_rotated_antennas_positions(elem, az):
     if elem == w1["left"]:
-        alfa = az - 120 - 90
-        cos_alfa = math.cos(math.radians(alfa))
-        sin_alfa = math.sin(math.radians(alfa))
-        l1 = sqrt((mid_w1_pos[0] - elem[0]) ** 2 + (mid_w1_pos[1] - elem[1]) ** 2)
-        x1 = mid_w1_pos[0] + l1 * cos_alfa
-        y1 = mid_w1_pos[1] + l1 * sin_alfa
-        return [x1, y1]
+        return rot_position(az, mid_w1_pos, elem, az_rot = 120)
     elif elem == w1["right"]:
-        alfa = az - 240 - 90
-        cos_alfa = math.cos(math.radians(alfa))
-        sin_alfa = math.sin(math.radians(alfa))
-        l1 = sqrt((mid_w1_pos[0] - elem[0]) ** 2 + (mid_w1_pos[1] - elem[1]) ** 2)
-        x1 = mid_w1_pos[0] + l1 * cos_alfa
-        y1 = mid_w1_pos[1] + l1 * sin_alfa
-        return [x1, y1]
+        return rot_position(az, mid_w1_pos, elem, az_rot = 240)
     elif elem == w1["middle"]:
-        alfa = az - 90
-        cos_alfa = math.cos(math.radians(alfa))
-        sin_alfa = math.sin(math.radians(alfa))
-        l1 = sqrt((mid_w1_pos[0] - elem[0]) ** 2 + (mid_w1_pos[1] - elem[1]) ** 2)
-        x1 = mid_w1_pos[0] + l1 * cos_alfa
-        y1 = mid_w1_pos[1] + l1 * sin_alfa
-        return [x1, y1]
+        return rot_position(az, mid_w1_pos, elem, az_rot = 0)
     elif elem == w2["left"]:
-        alfa = az - 120 - 90
-        cos_alfa = math.cos(math.radians(alfa))
-        sin_alfa = math.sin(math.radians(alfa))
-        l1 = sqrt((mid_w2_pos[0] - elem[0]) ** 2 + (mid_w2_pos[1] - elem[1]) ** 2)
-        x1 = mid_w2_pos[0] + l1 * cos_alfa
-        y1 = mid_w2_pos[1] + l1 * sin_alfa
-        return [x1, y1]
+        return rot_position(az, mid_w2_pos, elem, az_rot = 120)
     elif elem == w2["right"]:
-        alfa = az - 240 - 90
-        cos_alfa = math.cos(math.radians(alfa))
-        sin_alfa = math.sin(math.radians(alfa))
-        l1 = sqrt((mid_w2_pos[0] - elem[0]) ** 2 + (mid_w2_pos[1] - elem[1]) ** 2)
-        x1 = mid_w2_pos[0] + l1 * cos_alfa
-        y1 = mid_w2_pos[1] + l1 * sin_alfa
-        return [x1, y1]
+        return rot_position(az, mid_w2_pos, elem, az_rot = 240)
     elif elem == w2["middle"]:
-        alfa = az - 90
-        cos_alfa = math.cos(math.radians(alfa))
-        sin_alfa = math.sin(math.radians(alfa))
-        l1 = sqrt((mid_w2_pos[0] - elem[0]) ** 2 + (mid_w2_pos[1] - elem[1]) ** 2)
-        x1 = mid_w2_pos[0] + l1 * cos_alfa
-        y1 = mid_w2_pos[1] + l1 * sin_alfa
-        return [x1, y1]
+        return rot_position(az, mid_w2_pos, elem, az_rot = 0)
 
 
 def rotate(az, visib, lok):
@@ -283,8 +247,4 @@ for i in range(3):
 pyautogui.typewrite("rea")
 pyautogui.press("space")
 
-print(time.time() - begin_time)
-
-print(time.time() - begin_time)
-
-print(time.time() - begin_time)
+print("Wow, that was fast. It took only", round(time.time() - begin_time,2), "sec")
