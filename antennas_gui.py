@@ -13,7 +13,7 @@ a4 = [295, 1.2, 4]
 a5 = [85, 1.2, 5]
 a6 = [15, 0.6, 6]
 
-tow_check_E = "E2"      # E2 or E3 # note that: E4 == E3
+tow_check_E = "E3"      # E2, E3 or E4
 tow_azimuth = 292
 speed = 0
 # to be changed end
@@ -34,7 +34,9 @@ def tower_type(tow_check):
     if tow_check == "E2":
         return [0, 0, 0]
     elif tow_check == "E3":
-        return [21, 16, 11]
+        return [16, 12, 8]
+    else:
+        return [20, 14, 12]
 
 
 w1 = {"left": [mid_w1_pos[0] - (60 + tower_type(tow_check_E)[1]), mid_w1_pos[1] + (32 + tower_type(tow_check_E)[2])],
@@ -52,13 +54,10 @@ offset_arrow_red = [arrow_red_pos[0] - 740, arrow_red_pos[1]]
 def visibility(elem):
     if elem == 0.3:
         pyautogui.press("enter")
-        pyautogui.click(prop_below_vis_pos)
     elif elem == 0.6:
         pyautogui.typewrite('0')
-        pyautogui.click(prop_below_vis_pos)
     else:
         pyautogui.typewrite('1')
-        pyautogui.click(prop_below_vis_pos)
 
 
 def degree_change(azimuth):
@@ -141,6 +140,7 @@ def rotate(az, visib, lok):
     pyautogui.press("enter")
     pyautogui.click(prop_visib_pos)
     visibility(visib[1])
+    pyautogui.click(prop_below_vis_pos)
     pyautogui.typewrite(str(az[0]))
     pyautogui.press("enter")
     pyautogui.typewrite(str(az[2]))
@@ -171,6 +171,10 @@ def towers_rotate(tow_az, tow_check):
     if tow_check == "E3":
         pyautogui.click(prop_visib_pos)
         pyautogui.typewrite("e")
+    elif tow_check == "E4":
+        pyautogui.click(prop_visib_pos)
+        pyautogui.typewrite("e")
+        pyautogui.typewrite("e")        
     if not tow_az == 0:
         pyautogui.click(prop_below_vis_pos)
         pyautogui.typewrite(str(tow_az))
@@ -247,4 +251,8 @@ for i in range(3):
 pyautogui.typewrite("rea")
 pyautogui.press("space")
 
-print("Wow, that was fast. It took only", round(time.time() - begin_time,2), "sec")
+if round(time.time() - begin_time, 2) > 30:
+    print("Damn, It took only", round(time.time() - begin_time, 2), "sec. Maybe try type speed = 0. :)")
+else:
+    print("Wow, that was fast. It took only", round(time.time() - begin_time, 2), "sec")
+    
