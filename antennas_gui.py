@@ -134,12 +134,12 @@ def new_rotated_antennas_positions(elem, az):
         return rot_position(az, mid_w2_pos, elem, az_rot = 0)
 
 
-def rotate(az, visib, lok):
+def rotate(az, lok, tower):
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.click()
     pyautogui.press("enter")
     pyautogui.click(prop_visib_pos)
-    visibility(visib[1])
+    visibility(az[1])
     pyautogui.click(prop_below_vis_pos)
     pyautogui.typewrite(str(az[0]))
     pyautogui.press("enter")
@@ -150,10 +150,12 @@ def rotate(az, visib, lok):
     pyautogui.moveTo(arrow_red_pos, duration=speed)
     pyautogui.click()
     pyautogui.click(offset_arrow_red, duration=speed)
-    pyautogui.moveTo(mid_w1_pos, duration=speed)
-    pyautogui.click()
-    pyautogui.moveTo(mid_w2_pos, duration=speed)
-    pyautogui.click()
+    if tower == w1:
+        pyautogui.moveTo(mid_w1_pos, duration=speed)
+        pyautogui.click()
+    else:
+        pyautogui.moveTo(mid_w2_pos, duration=speed)
+        pyautogui.click()
     pyautogui.moveTo(rot_position(az[0], arrow_red_pos, ant_green_pos)[0] - (arrow_red_pos[0] - offset_arrow_red[0]),
                      rot_position(az[0], arrow_red_pos, ant_green_pos)[1], duration=speed)
     pyautogui.click()
@@ -242,9 +244,9 @@ azimuth1, azimuth2 = sort_az_list()
 towers_rotate(tow_azimuth, tow_check_E)
 for enum, elem in enumerate(all_a):
     if elem in azimuth1:
-        rotate(elem, elem, antennas_pos_w(elem, tow_azimuth, w1))
+        rotate(elem, antennas_pos_w(elem, tow_azimuth, w1), w1)
     else:
-        rotate(elem, elem, antennas_pos_w(elem, tow_azimuth, w2))
+        rotate(elem, antennas_pos_w(elem, tow_azimuth, w2), w2)
 for i in range(3):
     cross_antennas(azimuth1[i], azimuth1[i])
     cross_antennas(azimuth2[i], azimuth2[i])
